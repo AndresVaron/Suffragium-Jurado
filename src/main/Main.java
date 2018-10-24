@@ -14,7 +14,6 @@ public class Main {
 	private static final String VALORES = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
 
 	private ServerSocket receptor;
-
 	private String ip;
 	private int port;
 	private boolean start;
@@ -38,7 +37,7 @@ public class Main {
 		conexiones = new ArrayList<Conexion>();
 		votos = new Bag<String>();
 		try {
-			receptor = new ServerSocket(0);
+			receptor = new ServerSocket(8085);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -63,6 +62,9 @@ public class Main {
 						conexion.getOut().println("ERROR");
 						socketConexion.close();
 					}
+				} else if (msg.startsWith("LECTURACEDULA:")) {
+					String info = msg.replaceFirst("LECTURACEDULA:", "");
+					interfaz.confirmarIdentidad(info.split(",")[0], info.split(",")[1], info.split(",")[2], info.split(",")[3]);
 				} else {
 					conexion.getOut().println("ERROR");
 					socketConexion.close();
@@ -122,9 +124,14 @@ public class Main {
 		return msg;
 	}
 
-	public synchronized String votar(String cedula) {
-		int rand = (int) (Math.random() * (conexiones.size()));
-		Conexion con = conexiones.get(rand);
+	public String votar(String cedula) {
+		Conexion con = null;
+		int rand = 0;
+		//Esperar hasta que una casilla se muestre.
+		while (con == null || con.votando()) {
+			rand = (int) (Math.random() * (conexiones.size()));
+			con = conexiones.get(rand);
+		}
 		con.votar(cedula);
 		return "" + rand;
 	}
@@ -142,7 +149,7 @@ public class Main {
 
 	public synchronized void agregarVoto(String voto) {
 		votos.add(voto);
-
+		
 		// Decidir como mandar el voto a la base de datos.
 	}
 

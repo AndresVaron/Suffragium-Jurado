@@ -13,7 +13,7 @@ public class Principal {
 		reader = new Scanner(System.in);
 		//Pido numero de maquinas de votacion. 
 		// por ahora son 2:
-		main = new Main(2,this); //2 es el numero de maquinas de voto que se van a conectar.
+		main = new Main(1,this); //2 es el numero de maquinas de voto que se van a conectar.
 		main.getInfo();
 		main.getLlave();
 		//Imprime la info en la pantalla.
@@ -37,18 +37,8 @@ public class Principal {
 		new Principal();
 	}
 	
-	
-	public void iniciar() {
-		//Metodo para iniciar antes.
-		//Cambiar interfaz para que reciba info de cedula!
-	}
-	
-	public void ingresarVoto() {
-		//Remplazar esto con codigo de verificacion de la cedula.
-		String ced = reader.nextLine();
-		String puesto = main.votar(ced);
-		System.out.println("Identidad confirmada.");
-		System.out.println("Dirijase al puesto: " + puesto +" para realizar su voto.");
+	public void confirmarIdentidad(String nombre, String cedula, String fecha, String genero) {
+		//Imprimo ventana con esta informacion. 
 	}
 
 }
