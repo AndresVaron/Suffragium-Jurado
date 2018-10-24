@@ -19,9 +19,7 @@ public class Principal {
 		//Imprime la info en la pantalla.
 		System.out.println("Conectarse a: "+main.getInfo());
 		System.out.println("Con la llave: "+main.getLlave());
-		main.Empezar();
-		main.votar("123456");
-		
+		main.votaciones();		
 	}
 	
 	public void conexionRealizada(Conexion con) {
