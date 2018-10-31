@@ -18,9 +18,9 @@ public class ThreadVoto extends Thread{
 		try {
 			String msg = conexion.getIn().readLine();
 			if (msg.startsWith("VOTO:")) {
-				msg.replaceFirst("VOTO:", "");
+				msg = msg.replaceFirst("VOTO:", "");
 				msg = main.desEncriptar(msg);
-				msg.replaceFirst(cedula, "");
+				msg = msg.replaceFirst(cedula, "");
 				main.agregarVoto(msg);
 				conexion.finVoto();
 			}

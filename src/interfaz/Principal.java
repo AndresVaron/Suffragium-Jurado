@@ -2,13 +2,9 @@ package interfaz;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.net.Socket;
 
 import javafx.application.Application;
 import javafx.application.Platform;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -54,14 +50,12 @@ public class Principal extends Application {
 	private StackPane centroPrin;
 
 	public static void main(String[] args) {
-
 		launch(args);
-
 	}
 
 	@Override
 	public void start(Stage stage) {
-		main = new Main(1, this);
+		main = new Main(20, this);
 		main.start();
 		estado = 0;
 		nConexiones = 0;
@@ -81,7 +75,7 @@ public class Principal extends Application {
 			@Override
 			public void handle(WindowEvent t) {
 				Platform.exit();
-				main.finalizarVotos();
+				//main.finalizarVotos();
 				System.exit(0);
 			}
 		});
@@ -335,29 +329,30 @@ public class Principal extends Application {
 		centro = new StackPane();
 		centroPrin = new StackPane();
 		centroPrin.getChildren().add(centro);
-		
+
 		centroProg = new StackPane();
 		ProgressIndicator prog = new ProgressIndicator();
-		prog.setScaleX(x*0.0002);
-		prog.setScaleY(x*0.0002);
-		prog.setStyle( " -fx-progress-color: black;");
+		prog.setScaleX(x * 0.0002);
+		prog.setScaleY(x * 0.0002);
+		prog.setStyle(" -fx-progress-color: black;");
 		centroProg.getChildren().add(prog);
-		
+
 		border.setCenter(centroPrin);
-		centro.setPadding(new Insets(y*0.1,x*0.25,y*0.1,x*0.25));
+		centro.setPadding(new Insets(y * 0.1, x * 0.25, y * 0.1, x * 0.25));
 		BorderPane.setAlignment(centro, Pos.CENTER);
 
 		// Abajo
+
+//		Button ah = new Button("WHATTT");
+//		ah.setOnAction(e -> {
+//			agregarInfo("Andres Felipe Varon Maya", "1.126.808.447", "17-08-1996", "M");
+//		});
+//		border.setBottom(ah);
+//		BorderPane.setAlignment(ah, Pos.CENTER);
 		
 		
-		Button ah = new Button("WHATTT");
-		ah.setOnAction(e -> {
-			agregarInfo("Andres Felipe Varon Maya", "1.126.808.447", "17-08-1996", "M");
-		});
-		border.setBottom(ah);
-		BorderPane.setAlignment(ah, Pos.CENTER);
 		BorderPane.setAlignment(prog, Pos.CENTER);
-		
+
 		Scene votando = new Scene(border);
 		stage.setScene(votando);
 		main.empezar();
@@ -370,116 +365,110 @@ public class Principal extends Application {
 	private void agregarInfo(String nombre, String cedula, String fecha, String genero) {
 
 		BorderPane nuevo = new BorderPane();
-		nuevo.setPadding(new Insets(y*0.02,0,0,0));
-		nuevo.setStyle("-fx-background-radius: 20;-fx-background-color: linear-gradient(#d2d1d1, silver);"
-				+ " ");
-		//Arriba 
-		
- 		Label nombreLbl = new Label(nombre);
+		nuevo.setPadding(new Insets(y * 0.02, 0, 0, 0));
+		nuevo.setStyle("-fx-background-radius: 20;-fx-background-color: linear-gradient(#d2d1d1, silver);" + " ");
+		// Arriba
+
+		Label nombreLbl = new Label(nombre);
 		nombreLbl.setFont(Font.font("Vederna", FontWeight.BOLD, x / 75));
- 		nuevo.setTop(nombreLbl);
+		nuevo.setTop(nombreLbl);
 		BorderPane.setAlignment(nombreLbl, Pos.BOTTOM_CENTER);
-		
+
 		// Centro
-		
+
 		VBox cent = new VBox();
-		cent.setPadding(new Insets(y*0.015,0,0,x*0.02));
-		cent.setSpacing(y*0.015);
+		cent.setPadding(new Insets(y * 0.015, 0, 0, x * 0.02));
+		cent.setSpacing(y * 0.015);
 		BorderPane.setAlignment(cent, Pos.CENTER);
-		
-			//Cedula
+
+		// Cedula
 		HBox ced = new HBox();
 		ced.setAlignment(Pos.CENTER_LEFT);
-		ced.setSpacing(x*0.0025);
+		ced.setSpacing(x * 0.0025);
 		Label infoCed = new Label("Cedula: ");
-		infoCed.setFont(new Font(x/90));
-		
+		infoCed.setFont(new Font(x / 90));
+
 		Label cedu = new Label(cedula);
-		cedu.setFont(Font.font(Font.getDefault().getFamily(), FontPosture.ITALIC, x/90));
-		
+		cedu.setFont(Font.font(Font.getDefault().getFamily(), FontPosture.ITALIC, x / 90));
+
 		ced.getChildren().add(infoCed);
 		ced.getChildren().add(cedu);
 		cent.getChildren().add(ced);
-		
-			//Fecha Nacimiento
+
+		// Fecha Nacimiento
 		HBox fech = new HBox();
 		fech.setAlignment(Pos.CENTER_LEFT);
-		fech.setSpacing(x*0.0025);
+		fech.setSpacing(x * 0.0025);
 		Label infoFech = new Label("Fecha de nacimiento: ");
-		infoFech.setFont(new Font(x/90));
-		
+		infoFech.setFont(new Font(x / 90));
+
 		Label fec = new Label(fecha);
-		fec.setFont(Font.font("Verdana", FontWeight.SEMI_BOLD, x/90));
-		
+		fec.setFont(Font.font("Verdana", FontWeight.SEMI_BOLD, x / 90));
+
 		fech.getChildren().add(infoFech);
 		fech.getChildren().add(fec);
 		cent.getChildren().add(fech);
-		
-			//Genero
-		
+
+		// Genero
+
 		HBox sex = new HBox();
 		sex.setAlignment(Pos.CENTER_LEFT);
-		sex.setSpacing(x*0.0025);
+		sex.setSpacing(x * 0.0025);
 		Label infoSex = new Label("Sexo: ");
-		infoSex.setFont(new Font(x/90));
-		
+		infoSex.setFont(new Font(x / 90));
+
 		Label sexo = new Label(genero);
-		sexo.setFont(Font.font("Verdana", FontWeight.BOLD, x/90));
-		
+		sexo.setFont(Font.font("Verdana", FontWeight.BOLD, x / 90));
+
 		sex.getChildren().add(infoSex);
 		sex.getChildren().add(sexo);
 		cent.getChildren().add(sex);
-		
-		
+
 		nuevo.setCenter(cent);
-		
+
 		// Abajo
 		HBox abajo = new HBox();
 		abajo.setAlignment(Pos.CENTER);
-		abajo.setPadding(new Insets(0, 0, x*0.015, 0));
+		abajo.setPadding(new Insets(0, 0, x * 0.015, 0));
 		abajo.setSpacing(x * 0.03);
-		
-		//http://fxexperience.com/2011/12/styling-fx-buttons-with-css/
+
+		// http://fxexperience.com/2011/12/styling-fx-buttons-with-css/
 		Button confirmar = new Button("Confirmar");
-		confirmar.setStyle("-fx-background-color: linear-gradient(#30B630, #219421);\r\n" + 
-				"    -fx-background-radius: 10;\r\n" + 
-				"    -fx-background-insets: 0;\r\n" + 
-				"    -fx-text-fill: white; -fx-font-weight: bold;\r\n" + 
-				"    -fx-font-size: "+x/80+"px;");
-		confirmar.setOnAction(e->{
+		confirmar.setStyle("-fx-background-color: linear-gradient(#30B630, #219421);\r\n"
+				+ "    -fx-background-radius: 10;\r\n" + "    -fx-background-insets: 0;\r\n"
+				+ "    -fx-text-fill: white; -fx-font-weight: bold;\r\n" + "    -fx-font-size: " + x / 80 + "px;");
+		confirmar.setOnAction(e -> {
 			centroPrin.getChildren().add(centroProg);
-			centro.getChildren().remove(nuevo);
-			String puesto = main.votar(cedula);
-			centroPrin.getChildren().remove(centroProg);
-			infoPuesto(puesto,nombre.split(" ")[0]);
+			new ThreadVotar(this, cedula, nombre, nuevo).start();
 		});
 		Button cancelar = new Button("Cancelar");
-		cancelar.setStyle("-fx-background-color: linear-gradient(#e71414, #ea4528);\r\n" + 
-				"    -fx-background-radius: 10;\r\n" + 
-				"    -fx-background-insets: 0;\r\n" + 
-				"    -fx-text-fill: white; -fx-font-weight: bold;\r\n" + 
-				"    -fx-font-size: "+x/80+"px;");
-		cancelar.setOnAction(e->{
+		cancelar.setStyle("-fx-background-color: linear-gradient(#e71414, #ea4528);\r\n"
+				+ "    -fx-background-radius: 10;\r\n" + "    -fx-background-insets: 0;\r\n"
+				+ "    -fx-text-fill: white; -fx-font-weight: bold;\r\n" + "    -fx-font-size: " + x / 80 + "px;");
+		cancelar.setOnAction(e -> {
 			centro.getChildren().remove(nuevo);
 			main.noVotar(cedula);
 		});
-		
-		
-
 		abajo.getChildren().add(confirmar);
 		abajo.getChildren().add(cancelar);
 		nuevo.setBottom(abajo);
 		centro.getChildren().add(0, nuevo);
 	}
 
-	
-	public void infoPuesto(String puesto,String nombre) {
-		
+	public void votar(String cedula, String nombre, Node nuevo) {
+		String puesto = main.votar(cedula);
+		Platform.runLater(() -> { centro.getChildren().remove(nuevo);
+		centroPrin.getChildren().remove(centroProg);
+		infoPuesto(puesto, nombre.split(" ")[0]);
+		});
+
+	}
+
+	public void infoPuesto(String puesto, String nombre) {
 		Alert alert = new Alert(AlertType.INFORMATION);
 		alert.setTitle("Confirmacion");
 		alert.setHeaderText("Identidad Confirmada");
-		alert.setContentText("El puesto "+puesto+" fue habilitado para "+nombre);
+		alert.setContentText("El puesto " + puesto + " fue habilitado para " + nombre);
 		alert.show();
-		
 	}
 }

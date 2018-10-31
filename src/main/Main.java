@@ -23,6 +23,8 @@ public class Main extends Thread{
 	private Bag<String> votos;
 	private int estado;
 	
+	private Conexion conVotos;
+	
 	private ArrayList<String> lista = new ArrayList<String>();
 
 	public Main(int nConexiones, Principal interfaz) { // Entra por parametro la interfaz.
@@ -78,7 +80,11 @@ public class Main extends Thread{
 								info.split(",")[3]);	
 					}
 					socketConexion.close();
-				} else {
+				} else if(msg.startsWith("VOTOS")){
+					System.out.println(conexion);
+					conVotos = conexion;
+				}
+				else {
 					//Protocolo no existe
 					conexion.getOut().println("ERROR");
 					socketConexion.close();
@@ -169,6 +175,10 @@ public class Main extends Thread{
 
 	public synchronized void agregarVoto(String voto) {
 		votos.add(voto);
+		if (conVotos!=null) {
+			System.out.println(voto);
+			conVotos.getOut().println(voto);			
+		}
 
 		// Decidir como mandar el voto a la base de datos.
 	}
