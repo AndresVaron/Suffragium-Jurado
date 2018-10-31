@@ -19,6 +19,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.ProgressIndicator;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Background;
@@ -49,6 +50,8 @@ public class Principal extends Application {
 	private int nConexiones;
 	private Label nConex;
 	private StackPane centro;
+	private StackPane centroProg;
+	private StackPane centroPrin;
 
 	public static void main(String[] args) {
 
@@ -300,7 +303,7 @@ public class Principal extends Application {
 
 	public void iniciar() {
 		if (estado == 2) {
-			if (nConexiones == 0) {
+			if (nConexiones == -1) {
 				Alert alert = new Alert(AlertType.ERROR);
 				alert.setTitle("Error");
 				alert.setHeaderText(null);
@@ -330,19 +333,31 @@ public class Principal extends Application {
 
 		// Centro
 		centro = new StackPane();
-		border.setCenter(centro);
+		centroPrin = new StackPane();
+		centroPrin.getChildren().add(centro);
+		
+		centroProg = new StackPane();
+		ProgressIndicator prog = new ProgressIndicator();
+		prog.setScaleX(x*0.0002);
+		prog.setScaleY(x*0.0002);
+		prog.setStyle( " -fx-progress-color: black;");
+		centroProg.getChildren().add(prog);
+		
+		border.setCenter(centroPrin);
 		centro.setPadding(new Insets(y*0.1,x*0.25,y*0.1,x*0.25));
 		BorderPane.setAlignment(centro, Pos.CENTER);
 
 		// Abajo
-
+		
+		
 		Button ah = new Button("WHATTT");
 		ah.setOnAction(e -> {
 			agregarInfo("Andres Felipe Varon Maya", "1.126.808.447", "17-08-1996", "M");
 		});
 		border.setBottom(ah);
 		BorderPane.setAlignment(ah, Pos.CENTER);
-
+		BorderPane.setAlignment(prog, Pos.CENTER);
+		
 		Scene votando = new Scene(border);
 		stage.setScene(votando);
 		main.empezar();
@@ -432,8 +447,10 @@ public class Principal extends Application {
 				"    -fx-text-fill: white; -fx-font-weight: bold;\r\n" + 
 				"    -fx-font-size: "+x/80+"px;");
 		confirmar.setOnAction(e->{
+			centroPrin.getChildren().add(centroProg);
 			centro.getChildren().remove(nuevo);
 			String puesto = main.votar(cedula);
+			centroPrin.getChildren().remove(centroProg);
 			infoPuesto(puesto,nombre.split(" ")[0]);
 		});
 		Button cancelar = new Button("Cancelar");
