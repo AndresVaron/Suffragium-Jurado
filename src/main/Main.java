@@ -9,7 +9,7 @@ import java.util.ArrayList;
 
 import interfaz.Principal;
 
-public class Main {
+public class Main extends Thread{
 
 	private static final String VALORES = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
 
@@ -21,7 +21,9 @@ public class Main {
 	private Principal interfaz;
 	private byte[] llave;
 	private Bag<String> votos;
-	private boolean fin;
+	private int estado;
+	
+	private ArrayList<String> lista = new ArrayList<String>();
 
 	public Main(int nConexiones, Principal interfaz) { // Entra por parametro la interfaz.
 		this.interfaz = interfaz;
@@ -33,7 +35,7 @@ public class Main {
 		}
 		String key = generarLlave(16);
 		setKey(key);
-		fin = false;
+		estado = 0;
 		conexiones = new ArrayList<Conexion>();
 		votos = new Bag<String>();
 		try {
@@ -44,14 +46,13 @@ public class Main {
 		port = receptor.getLocalPort();
 	}
 
-	public void votaciones() {
+	public void run() {
 		try {
 			// Aqui se le manda a la interfaz la ip:puerto y la llave para conectarse.
-			while (!fin) {
+			while (!fin()) {
 				Socket socketConexion = receptor.accept();
 				Conexion conexion = new Conexion(socketConexion, this);
 				String msg = conexion.getIn().readLine();
-				System.out.println(msg);
 				if (msg.startsWith("INICIAR:")) {
 					if (nConexiones > conexiones.size()) {
 						String llav = desEncriptar(msg.replaceFirst("INICIAR:", ""));
@@ -70,10 +71,13 @@ public class Main {
 						socketConexion.close();
 					}
 				} else if (msg.startsWith("LECTURACEDULA:")) {
-					System.out.println("OK");
 					String info = msg.replaceFirst("LECTURACEDULA:", "");
-					interfaz.confirmarIdentidad(info.split(",")[0], info.split(",")[1], info.split(",")[2],
-							info.split(",")[3]);
+					if (!lista.contains(info.split(",")[1])&&estado==1) {
+						lista.add(info.split(",")[1]);
+						interfaz.confirmarIdentidad(info.split(",")[0], info.split(",")[1], info.split(",")[2],
+								info.split(",")[3]);	
+					}
+					socketConexion.close();
 				} else {
 					//Protocolo no existe
 					conexion.getOut().println("ERROR");
@@ -92,7 +96,14 @@ public class Main {
 	}
 
 	public synchronized boolean fin() {
-		return fin;
+		if (estado==-1) {
+			return true;
+		}
+		return false;
+	}
+	
+	public synchronized void empezar() {
+		estado = 1;
 	}
 
 	public String getInfo() {
@@ -115,7 +126,7 @@ public class Main {
 			int character = (int) (Math.random() * VALORES.length());
 			builder.append(VALORES.charAt(character));
 		}
-		return builder.toString();
+		return "123";//builder.toString();
 	}
 
 	public void setKey(String key) {
@@ -133,17 +144,19 @@ public class Main {
 	public String votar(String cedula) {
 		Conexion con = null;
 		int rand = 0;
-		// Esperar hasta que una casilla se muestre.
-		while (con == null || con.votando()) {
-			rand = (int) (Math.random() * (conexiones.size()));
-			con = conexiones.get(rand);
+		if (conexiones.size()>0) {
+			// Esperar hasta que una casilla se muestre.
+			while (con == null || con.votando()) {
+				rand = (int) (Math.random() * (conexiones.size()));
+				con = conexiones.get(rand);
+			}
+			con.votar(cedula);
 		}
-		con.votar(cedula);
-		return "" + rand;
+		return "" + (rand+1);
 	}
 
 	public synchronized void finalizarVotos() {
-		fin = true;
+		estado = -1;
 		while (conexiones.size() > 0) {
 			for (int i = 0; i < conexiones.size(); i++) {
 				if (conexiones.get(i).votando() == false) {
@@ -158,6 +171,10 @@ public class Main {
 		votos.add(voto);
 
 		// Decidir como mandar el voto a la base de datos.
+	}
+
+	public void noVotar(String cedula) {
+		lista.remove(cedula);
 	}
 
 }

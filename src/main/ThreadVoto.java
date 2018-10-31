@@ -22,6 +22,7 @@ public class ThreadVoto extends Thread{
 				msg = main.desEncriptar(msg);
 				msg.replaceFirst(cedula, "");
 				main.agregarVoto(msg);
+				conexion.finVoto();
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
