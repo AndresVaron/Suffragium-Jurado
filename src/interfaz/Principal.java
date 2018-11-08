@@ -1,11 +1,14 @@
 package interfaz;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 
+import javafx.animation.PathTransition;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.event.EventHandler;
+import javafx.geometry.Bounds;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.geometry.Rectangle2D;
@@ -27,12 +30,16 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.shape.LineTo;
+import javafx.scene.shape.MoveTo;
+import javafx.scene.shape.Path;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontPosture;
 import javafx.scene.text.FontWeight;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
+import javafx.util.Duration;
 import main.Conexion;
 import main.Main;
 
@@ -75,7 +82,7 @@ public class Principal extends Application {
 			@Override
 			public void handle(WindowEvent t) {
 				Platform.exit();
-				//main.finalizarVotos();
+				// main.finalizarVotos();
 				System.exit(0);
 			}
 		});
@@ -343,14 +350,14 @@ public class Principal extends Application {
 
 		// Abajo
 
-//		Button ah = new Button("WHATTT");
-//		ah.setOnAction(e -> {
-//			agregarInfo("Andres Felipe Varon Maya", "1.126.808.447", "17-08-1996", "M");
-//		});
-//		border.setBottom(ah);
-//		BorderPane.setAlignment(ah, Pos.CENTER);
-		
-		
+		Button ah = new Button("WHATTT");
+		ah.setOnAction(e -> {
+			stage.getScene().getStylesheets().add(Principal.class.getResource("votando.css").toExternalForm());
+			agregarInfo("Andres Felipe Varon Maya", "1.126.808.447", "17-08-1996", "M");
+		});
+		border.setBottom(ah);
+		BorderPane.setAlignment(ah, Pos.CENTER);
+
 		BorderPane.setAlignment(prog, Pos.CENTER);
 
 		Scene votando = new Scene(border);
@@ -432,36 +439,87 @@ public class Principal extends Application {
 		abajo.setPadding(new Insets(0, 0, x * 0.015, 0));
 		abajo.setSpacing(x * 0.03);
 
-		// http://fxexperience.com/2011/12/styling-fx-buttons-with-css/
 		Button confirmar = new Button("Confirmar");
-		confirmar.setStyle("-fx-background-color: linear-gradient(#30B630, #219421);\r\n"
-				+ "    -fx-background-radius: 10;\r\n" + "    -fx-background-insets: 0;\r\n"
-				+ "    -fx-text-fill: white; -fx-font-weight: bold;\r\n" + "    -fx-font-size: " + x / 80 + "px;");
-		confirmar.setOnAction(e -> {
-			centroPrin.getChildren().add(centroProg);
-			new ThreadVotar(this, cedula, nombre, nuevo).start();
-		});
+		confirmar.setId("confirmar");
+		confirmar.setStyle("   -fx-font-size: " + x / 80 + "px;");
+
 		Button cancelar = new Button("Cancelar");
-		cancelar.setStyle("-fx-background-color: linear-gradient(#e71414, #ea4528);\r\n"
-				+ "    -fx-background-radius: 10;\r\n" + "    -fx-background-insets: 0;\r\n"
-				+ "    -fx-text-fill: white; -fx-font-weight: bold;\r\n" + "    -fx-font-size: " + x / 80 + "px;");
-		cancelar.setOnAction(e -> {
-			centro.getChildren().remove(nuevo);
-			main.noVotar(cedula);
-		});
+		cancelar.setId("cancelar");
+		cancelar.setStyle("   -fx-font-size: " + x / 80 + "px;");
+
 		abajo.getChildren().add(confirmar);
 		abajo.getChildren().add(cancelar);
 		nuevo.setBottom(abajo);
 		centro.getChildren().add(0, nuevo);
-	}
 
-	public void votar(String cedula, String nombre, Node nuevo) {
-		String puesto = main.votar(cedula);
-		Platform.runLater(() -> { centro.getChildren().remove(nuevo);
-		centroPrin.getChildren().remove(centroProg);
-		infoPuesto(puesto, nombre.split(" ")[0]);
+		Bounds boundsInScreen = nuevo.localToScreen(nuevo.getBoundsInLocal());
+
+		confirmar.setOnAction(e -> {
+			centroPrin.getChildren().add(centroProg);
+			new ThreadVotar(this, cedula, nombre, nuevo, boundsInScreen).start();
 		});
 
+		cancelar.setOnAction(e -> {
+			Path path = new Path();
+			MoveTo moveTo = new MoveTo(x / 4 - boundsInScreen.getMaxX(), y / 4 - boundsInScreen.getMaxY() / 2);
+			LineTo cubicCurveTo = new LineTo(x, y / 4 - boundsInScreen.getMaxY() / 2);
+			path.getElements().add(moveTo);
+			path.getElements().add(cubicCurveTo);
+			PathTransition pathTransition = new PathTransition();
+			pathTransition.setDuration(Duration.millis(2000));
+			pathTransition.setNode(nuevo);
+			pathTransition.setPath(path);
+			pathTransition.setOrientation(PathTransition.OrientationType.NONE);
+			pathTransition.setCycleCount(1);
+			pathTransition.setAutoReverse(false);
+			pathTransition.play();
+			new ThreadBorrar(this, nuevo).start();
+			main.noVotar(cedula);
+		});
+
+		Path path = new Path();
+		MoveTo moveTo = new MoveTo(boundsInScreen.getMaxX() * -3.5, y / 4 - boundsInScreen.getMaxY() / 2);
+		LineTo cubicCurveTo = new LineTo(x / 4 - boundsInScreen.getMaxX(), y / 4 - boundsInScreen.getMaxY() / 2);
+		path.getElements().add(moveTo);
+		path.getElements().add(cubicCurveTo);
+		PathTransition pathTransition = new PathTransition();
+		pathTransition.setDuration(Duration.millis(2000));
+		pathTransition.setNode(nuevo);
+		pathTransition.setPath(path);
+		pathTransition.setOrientation(PathTransition.OrientationType.NONE);
+		pathTransition.setCycleCount(1);
+		pathTransition.setAutoReverse(false);
+		pathTransition.play();
+
+	}
+
+	public void votar(String cedula, String nombre, Node nuevo,Bounds boundsInScreen) {
+		String puesto = main.votar(cedula);
+		Platform.runLater(() -> {
+			Path path = new Path();
+			MoveTo moveTo = new MoveTo(x / 4 - boundsInScreen.getMaxX(), y / 4 - boundsInScreen.getMaxY() / 2);
+			LineTo cubicCurveTo = new LineTo(x, y / 4 - boundsInScreen.getMaxY() / 2);
+			path.getElements().add(moveTo);
+			path.getElements().add(cubicCurveTo);
+			PathTransition pathTransition = new PathTransition();
+			pathTransition.setDuration(Duration.millis(2000));
+			pathTransition.setNode(nuevo);
+			pathTransition.setPath(path);
+			pathTransition.setOrientation(PathTransition.OrientationType.NONE);
+			pathTransition.setCycleCount(1);
+			pathTransition.setAutoReverse(false);
+			pathTransition.play();
+			new ThreadBorrar(this, nuevo);
+			centroPrin.getChildren().remove(centroProg);
+			infoPuesto(puesto, nombre.split(" ")[0]);
+		});
+
+	}
+
+	public void borrar(Node node) {
+		Platform.runLater(() -> {
+			centro.getChildren().remove(node);
+		});
 	}
 
 	public void infoPuesto(String puesto, String nombre) {

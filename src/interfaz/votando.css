@@ -1,0 +1,55 @@
+#cancelar {
+    -fx-padding: 8 15 13 15;
+    -fx-background-insets: 0,0 0 7 0, 0 0 8 0, 0 0 9 0;
+    -fx-background-radius: 8;
+    -fx-background-color: 
+        linear-gradient(from 0% 93% to 0% 100%, #c50000 0%, #920000 100%),
+        #a70000,
+        #e50202,
+        radial-gradient(center 50% 50%, radius 100%, #e50202, #bd1919);
+    -fx-effect: dropshadow( gaussian , rgba(0,0,0,0.75) , 4,0,0,1 );
+    -fx-font-weight: bold;
+    -fx-text-fill: white;
+}
+#cancelar:hover {
+    -fx-background-color: 
+        linear-gradient(from 0% 93% to 0% 100%, #c50000 0%, #920000 100%),
+        #a70000,
+        #e50202,
+        radial-gradient(center 50% 50%, radius 100%, #ff0000, #bd1919);
+}
+#cancelar:pressed {
+    -fx-padding: 10 15 11 15;
+    -fx-background-insets: 2 0 0 0,2 0 3 0, 2 0 4 0, 2 0 5 0;
+}
+#cancelar Text {
+    -fx-effect: dropshadow( gaussian , #a30000 , 0,0,0,2 );
+}
+
+#confirmar{
+    -fx-padding: 8 15 13 15;
+    -fx-background-insets: 0,0 0 7 0, 0 0 8 0, 0 0 9 0;
+    -fx-background-radius: 8;
+    -fx-background-color: 
+        linear-gradient(from 0% 93% to 0% 100%, #0D7E0D 0%, #096009 100%),
+        #0B760B,
+        #30B630,
+        radial-gradient(center 50% 50%, radius 100%, #30B630, #118d11);
+    -fx-effect: dropshadow( gaussian , rgba(0,0,0,0.75) , 4,0,0,1 );
+    -fx-font-weight: bold;
+    -fx-text-fill: white;
+}
+#confirmar:hover {
+    -fx-background-color: 
+        linear-gradient(from 0% 93% to 0% 100%, #0D7E0D 0%, #096009 100%),
+        #0B760B,
+        #30B630,
+        radial-gradient(center 50% 50%, radius 100%, #3AC33A, #118d11);
+}
+#confirmar:pressed {
+    -fx-padding: 10 15 11 15;
+    -fx-background-insets: 2 0 0 0,2 0 3 0, 2 0 4 0, 2 0 5 0;
+}
+#confirmar text {
+    -fx-effect: dropshadow( gaussian , #a30000 , 0,0,0,2 );
+}

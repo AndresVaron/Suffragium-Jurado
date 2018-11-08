@@ -41,7 +41,7 @@ public class Main extends Thread{
 		conexiones = new ArrayList<Conexion>();
 		votos = new Bag<String>();
 		try {
-			receptor = new ServerSocket(8085);
+			receptor = new ServerSocket(0);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
