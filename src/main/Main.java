@@ -9,7 +9,7 @@ import java.util.ArrayList;
 
 import interfaz.Principal;
 
-public class Main extends Thread{
+public class Main extends Thread {
 
 	private static final String VALORES = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
 
@@ -22,9 +22,9 @@ public class Main extends Thread{
 	private byte[] llave;
 	private Bag<String> votos;
 	private int estado;
-	
+
 	private Conexion conVotos;
-	
+
 	private ArrayList<String> lista = new ArrayList<String>();
 
 	public Main(int nConexiones, Principal interfaz) { // Entra por parametro la interfaz.
@@ -41,7 +41,7 @@ public class Main extends Thread{
 		conexiones = new ArrayList<Conexion>();
 		votos = new Bag<String>();
 		try {
-			receptor = new ServerSocket(0);
+			receptor = new ServerSocket(8085);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -68,24 +68,23 @@ public class Main extends Thread{
 							socketConexion.close();
 						}
 					} else {
-						//No caben mas maquinas de votacion
+						// No caben mas maquinas de votacion
 						conexion.getOut().println("ERROR");
 						socketConexion.close();
 					}
 				} else if (msg.startsWith("LECTURACEDULA:")) {
 					String info = msg.replaceFirst("LECTURACEDULA:", "");
-					if (!lista.contains(info.split(",")[1])&&estado==1) {
+					if (!lista.contains(info.split(",")[1]) && estado == 1) {
 						lista.add(info.split(",")[1]);
 						interfaz.confirmarIdentidad(info.split(",")[0], info.split(",")[1], info.split(",")[2],
-								info.split(",")[3]);	
+								info.split(",")[3], info.split(",")[4], info.split(",")[5]);
 					}
 					socketConexion.close();
-				} else if(msg.startsWith("VOTOS")){
+				} else if (msg.startsWith("VOTOS")) {
 					System.out.println(conexion);
 					conVotos = conexion;
-				}
-				else {
-					//Protocolo no existe
+				} else {
+					// Protocolo no existe
 					conexion.getOut().println("ERROR");
 					socketConexion.close();
 				}
@@ -102,12 +101,12 @@ public class Main extends Thread{
 	}
 
 	public synchronized boolean fin() {
-		if (estado==-1) {
+		if (estado == -1) {
 			return true;
 		}
 		return false;
 	}
-	
+
 	public synchronized void empezar() {
 		estado = 1;
 	}
@@ -132,7 +131,7 @@ public class Main extends Thread{
 			int character = (int) (Math.random() * VALORES.length());
 			builder.append(VALORES.charAt(character));
 		}
-		return "123";//builder.toString();
+		return "39yGJqQs9b7rMOCR";// builder.toString();
 	}
 
 	public void setKey(String key) {
@@ -147,18 +146,18 @@ public class Main extends Thread{
 		return msg;
 	}
 
-	public String votar(String cedula) {
+	public String votar(String cedula, String municipio, String departamento) {
 		Conexion con = null;
 		int rand = 0;
-		if (conexiones.size()>0) {
+		if (conexiones.size() > 0) {
 			// Esperar hasta que una casilla se muestre.
 			while (con == null || con.votando()) {
 				rand = (int) (Math.random() * (conexiones.size()));
 				con = conexiones.get(rand);
 			}
-			con.votar(cedula);
+			con.votar(cedula, municipio, departamento);
 		}
-		return "" + (rand+1);
+		return "" + (rand + 1);
 	}
 
 	public synchronized void finalizarVotos() {
@@ -173,11 +172,11 @@ public class Main extends Thread{
 		}
 	}
 
-	public synchronized void agregarVoto(String voto) {
+	public synchronized void agregarVoto(String voto, String municipio, String departamento) {
 		votos.add(voto);
-		if (conVotos!=null) {
+		if (conVotos != null) {
 			System.out.println(voto);
-			conVotos.getOut().println(voto);			
+			conVotos.getOut().println(voto);//Mandar Voto al servidor. 
 		}
 
 		// Decidir como mandar el voto a la base de datos.

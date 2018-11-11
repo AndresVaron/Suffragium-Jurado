@@ -45,11 +45,11 @@ public class Conexion{
 		return votando;
 	}
 	
-	public void votar(String cedula) {
+	public void votar(String cedula,String municipio, String departamento) {
 		///Crea un thread que espera la respuesta;
 		out.println("HABILITAR:"+main.encriptar(cedula));
 		iniciarVoto();
-		ThreadVoto t = new ThreadVoto(cedula,this,main);
+		ThreadVoto t = new ThreadVoto(cedula,this,main,municipio,departamento);
 		t.start();
 	}
 	

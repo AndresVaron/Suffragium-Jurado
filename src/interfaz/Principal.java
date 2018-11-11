@@ -1,6 +1,5 @@
 package interfaz;
 
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 
@@ -350,14 +349,14 @@ public class Principal extends Application {
 
 		// Abajo
 
-		Button ah = new Button("WHATTT");
-		ah.setOnAction(e -> {
-			stage.getScene().getStylesheets().add(Principal.class.getResource("votando.css").toExternalForm());
-			agregarInfo("Andres Felipe Varon Maya", "1.126.808.447", "17-08-1996", "M");
-		});
-		border.setBottom(ah);
-		BorderPane.setAlignment(ah, Pos.CENTER);
-
+//									Button ah = new Button("WHATTT");
+//									ah.setOnAction(e -> {
+//										stage.getScene().getStylesheets().add(Principal.class.getResource("votando.css").toExternalForm());
+//										agregarInfo("Andres Felipe Varon Maya", "1.126.808.447", "17-08-1996", "M", "Bogota", "Cundinamarca");
+//									});
+//									border.setBottom(ah);
+//									BorderPane.setAlignment(ah, Pos.CENTER);
+							
 		BorderPane.setAlignment(prog, Pos.CENTER);
 
 		Scene votando = new Scene(border);
@@ -365,11 +364,13 @@ public class Principal extends Application {
 		main.empezar();
 	}
 
-	public void confirmarIdentidad(String nombre, String cedula, String fecha, String genero) {
-		Platform.runLater(() -> agregarInfo(nombre, cedula, fecha, genero));
+	public void confirmarIdentidad(String nombre, String cedula, String fecha, String genero, String municipio,
+			String departamento) {
+		Platform.runLater(() -> agregarInfo(nombre, cedula, fecha, genero, municipio, departamento));
 	}
 
-	private void agregarInfo(String nombre, String cedula, String fecha, String genero) {
+	private void agregarInfo(String nombre, String cedula, String fecha, String genero, String municipio,
+			String departamento) {
 
 		BorderPane nuevo = new BorderPane();
 		nuevo.setPadding(new Insets(y * 0.02, 0, 0, 0));
@@ -456,7 +457,7 @@ public class Principal extends Application {
 
 		confirmar.setOnAction(e -> {
 			centroPrin.getChildren().add(centroProg);
-			new ThreadVotar(this, cedula, nombre, nuevo, boundsInScreen).start();
+			new ThreadVotar(this, cedula, nombre, nuevo, boundsInScreen, municipio, departamento).start();
 		});
 
 		cancelar.setOnAction(e -> {
@@ -493,8 +494,9 @@ public class Principal extends Application {
 
 	}
 
-	public void votar(String cedula, String nombre, Node nuevo,Bounds boundsInScreen) {
-		String puesto = main.votar(cedula);
+	public void votar(String cedula, String nombre, Node nuevo, Bounds boundsInScreen, String municipio,
+			String departamento) {
+		String puesto = main.votar(cedula, municipio, departamento);
 		Platform.runLater(() -> {
 			Path path = new Path();
 			MoveTo moveTo = new MoveTo(x / 4 - boundsInScreen.getMaxX(), y / 4 - boundsInScreen.getMaxY() / 2);
