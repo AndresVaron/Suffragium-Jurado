@@ -2,10 +2,17 @@ package main;
 
 import java.io.IOException;
 import java.net.InetAddress;
+import java.net.MalformedURLException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
+import java.io.BufferedReader;
+import java.io.DataOutputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import javax.net.ssl.HttpsURLConnection;
 
 import interfaz.Principal;
 
@@ -41,11 +48,24 @@ public class Main extends Thread {
 		conexiones = new ArrayList<Conexion>();
 		votos = new Bag<String>();
 		try {
-			receptor = new ServerSocket(8085);
+			receptor = new ServerSocket(0);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 		port = receptor.getLocalPort();
+		
+		//Actualizar la base de datos
+		String url = "http://157.253.238.75:80/Suffragium/api/jurado?dir=" + ip + ":" + port+"&key="+key;
+		URL obj;
+		try {
+			obj = new URL(url);
+			HttpURLConnection con = (HttpURLConnection) obj.openConnection();
+			con.setRequestMethod("PUT");
+			con.setRequestProperty("User-Agent", "Mozilla/5.0");
+			con.getResponseCode();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 	public void run() {
@@ -81,7 +101,6 @@ public class Main extends Thread {
 					}
 					socketConexion.close();
 				} else if (msg.startsWith("VOTOS")) {
-					System.out.println(conexion);
 					conVotos = conexion;
 				} else {
 					// Protocolo no existe
@@ -131,7 +150,7 @@ public class Main extends Thread {
 			int character = (int) (Math.random() * VALORES.length());
 			builder.append(VALORES.charAt(character));
 		}
-		return "39yGJqQs9b7rMOCR";// builder.toString();
+		return builder.toString();
 	}
 
 	public void setKey(String key) {
@@ -175,11 +194,19 @@ public class Main extends Thread {
 	public synchronized void agregarVoto(String voto, String municipio, String departamento) {
 		votos.add(voto);
 		if (conVotos != null) {
-			System.out.println(voto);
-			conVotos.getOut().println(voto);//Mandar Voto al servidor. 
+			conVotos.getOut().println(voto);// Mandar Voto al servidor.
 		}
-
-		// Decidir como mandar el voto a la base de datos.
+		String url = "http://157.253.238.75:80/Suffragium/api/votos?voto="+voto.trim()+"&municipio="+municipio.trim()+"&departamento="+departamento.trim();
+		URL obj;
+		try {
+			obj = new URL(url);
+			HttpURLConnection con = (HttpURLConnection) obj.openConnection();
+			con.setRequestMethod("POST");
+			con.setRequestProperty("User-Agent", "Mozilla/5.0");
+			con.getResponseCode();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 	public void noVotar(String cedula) {

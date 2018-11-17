@@ -351,12 +351,11 @@ public class Principal extends Application {
 
 //									Button ah = new Button("WHATTT");
 //									ah.setOnAction(e -> {
-//										stage.getScene().getStylesheets().add(Principal.class.getResource("votando.css").toExternalForm());
 //										agregarInfo("Andres Felipe Varon Maya", "1.126.808.447", "17-08-1996", "M", "Bogota", "Cundinamarca");
 //									});
 //									border.setBottom(ah);
 //									BorderPane.setAlignment(ah, Pos.CENTER);
-							
+
 		BorderPane.setAlignment(prog, Pos.CENTER);
 
 		Scene votando = new Scene(border);
@@ -371,7 +370,7 @@ public class Principal extends Application {
 
 	private void agregarInfo(String nombre, String cedula, String fecha, String genero, String municipio,
 			String departamento) {
-
+		stage.getScene().getStylesheets().add(Principal.class.getResource("votando.css").toExternalForm());
 		BorderPane nuevo = new BorderPane();
 		nuevo.setPadding(new Insets(y * 0.02, 0, 0, 0));
 		nuevo.setStyle("-fx-background-radius: 20;-fx-background-color: linear-gradient(#d2d1d1, silver);" + " ");
