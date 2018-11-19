@@ -1,18 +1,13 @@
 package main;
 
 import java.io.IOException;
+import java.net.HttpURLConnection;
 import java.net.InetAddress;
-import java.net.MalformedURLException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.URL;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
-import java.io.BufferedReader;
-import java.io.DataOutputStream;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import javax.net.ssl.HttpsURLConnection;
 
 import interfaz.Principal;
 
@@ -55,7 +50,7 @@ public class Main extends Thread {
 		port = receptor.getLocalPort();
 		
 		//Actualizar la base de datos
-		String url = "http://157.253.238.75:80/Suffragium/api/jurado?dir=" + ip + ":" + port+"&key="+key;
+		String url = "http://157.253.238.75:8080/Suffragium/api/jurado?dir=" + ip + ":" + port+"&key="+key;
 		URL obj;
 		try {
 			obj = new URL(url);
@@ -196,7 +191,7 @@ public class Main extends Thread {
 		if (conVotos != null) {
 			conVotos.getOut().println(voto);// Mandar Voto al servidor.
 		}
-		String url = "http://157.253.238.75:80/Suffragium/api/votos?voto="+voto.trim()+"&municipio="+municipio.trim()+"&departamento="+departamento.trim();
+		String url = "http://157.253.238.75:8080/Suffragium/api/votos?voto="+voto.trim()+"&municipio="+municipio.trim()+"&departamento="+departamento.trim();
 		URL obj;
 		try {
 			obj = new URL(url);
